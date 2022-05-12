@@ -204,34 +204,44 @@ export default {
             if (transfer) {
               let left = boundingLeft
               let top = boundingTop + targetHeight
-              if (placement === 'top') {
-                panelPlacement = 'top'
-                top = boundingTop - panelHeight
-              } else if (!placement) {
-                // 如果下面不够放，则向上
-                if (top + panelHeight + marginSize > visibleHeight) {
+              if (placement === 'right') {
+                left = boundingLeft + targetWidth + marginSize
+                top -= panelHeight / 3
+                Object.assign(panelStyle, {
+                  left: `${left}px`,
+                  top: `${top}px`,
+                  minWidth: `${targetWidth}px`
+                })
+              } else {
+                if (placement === 'top') {
                   panelPlacement = 'top'
                   top = boundingTop - panelHeight
+                } else if (!placement) {
+                  // 如果下面不够放，则向上
+                  if (top + panelHeight + marginSize > visibleHeight) {
+                    panelPlacement = 'top'
+                    top = boundingTop - panelHeight
+                  }
+                  // 如果上面不够放，则向下（优先）
+                  if (top < marginSize) {
+                    panelPlacement = 'bottom'
+                    top = boundingTop + targetHeight
+                  }
                 }
-                // 如果上面不够放，则向下（优先）
-                if (top < marginSize) {
-                  panelPlacement = 'bottom'
-                  top = boundingTop + targetHeight
+                // 如果溢出右边
+                if (left + panelWidth + marginSize > visibleWidth) {
+                  left -= left + panelWidth + marginSize - visibleWidth
                 }
+                // 如果溢出左边
+                if (left < marginSize) {
+                  left = marginSize
+                }
+                Object.assign(panelStyle, {
+                  left: `${left}px`,
+                  top: `${top}px`,
+                  minWidth: `${targetWidth}px`
+                })
               }
-              // 如果溢出右边
-              if (left + panelWidth + marginSize > visibleWidth) {
-                left -= left + panelWidth + marginSize - visibleWidth
-              }
-              // 如果溢出左边
-              if (left < marginSize) {
-                left = marginSize
-              }
-              Object.assign(panelStyle, {
-                left: `${left}px`,
-                top: `${top}px`,
-                minWidth: `${targetWidth}px`
-              })
             } else {
               if (placement === 'top') {
                 panelPlacement = 'top'
